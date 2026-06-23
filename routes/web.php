@@ -9,6 +9,10 @@ use App\Http\Controllers\ProfileController;
 
 require __DIR__ . '/auth.php';
 
+Route::get('/', function () {
+    return view('frontend.index'); // create resources/views/dashboard.blade.php
+});
+
 Route::prefix('admin')->name('admin.')->group(function () {
 
     //admin
@@ -28,7 +32,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 
 Route::group(['prefix' => '/', 'middleware' => 'auth'], function () {
-    Route::get('', [RoutingController::class, 'index'])->name('root');
+    // Route::get('', [RoutingController::class, 'index'])->name('root');
     Route::get('{first}/{second}/{third}', [RoutingController::class, 'thirdLevel'])->name('third');
     Route::get('{first}/{second}', [RoutingController::class, 'secondLevel'])->name('second');
     Route::get('{any}', [RoutingController::class, 'root'])->name('any');
@@ -45,9 +49,12 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 // Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-
-Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return view('index'); // create resources/views/dashboard.blade.php
-    });
+Route::get('/', function () {
+    return view('frontend.index'); // create resources/views/dashboard.blade.php
 });
+
+// Route::middleware('auth')->group(function () {
+//     Route::get('/', function () {
+//         return view('frontend.index'); // create resources/views/dashboard.blade.php
+//     });
+// });
