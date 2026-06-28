@@ -13,6 +13,23 @@ Route::get('/', function () {
     return view('frontend.index'); // create resources/views/dashboard.blade.php
 });
 
+Route::get('/', function () {
+    return view('frontend.index'); // create resources/views/dashboard.blade.php
+});
+
+Route::get('/products', function () {
+    return view('frontend.grid'); // create resources/views/dashboard.blade.php
+});
+
+
+Route::get('/product', function () {
+    return view('frontend.product'); // create resources/views/dashboard.blade.php
+});
+
+Route::get('/contact', function () {
+    return view('frontend.contact'); // create resources/views/frontend/contact.blade.php
+});
+
 Route::prefix('admin')->name('admin.')->group(function () {
 
     //admin
@@ -49,12 +66,5 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 // Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/', function () {
-    return view('frontend.index'); // create resources/views/dashboard.blade.php
-});
 
-// Route::middleware('auth')->group(function () {
-//     Route::get('/', function () {
-//         return view('frontend.index'); // create resources/views/dashboard.blade.php
-//     });
-// });
+
