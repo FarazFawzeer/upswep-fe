@@ -4,23 +4,6 @@
 @section('description', 'Discover premium clothing, workwear, accessories and the latest collections from UPSWEP.')
 
 @section('content')
-{{-- ============================================================
-     UPSWEP HOMEPAGE
-     resources/views/index.blade.php (or frontend/index.blade.php
-     to match your existing route — see notes at the bottom)
-
-     Structure: Header (partial) -> Hero -> Category circles ->
-     Trending grid -> Styled-for-you strip -> Featured grid ->
-     Discover brands -> Footer (partial)
-
-     Global header/nav/footer markup now lives in shared partials
-     (partials/header.blade.php, partials/footer.blade.php) so this
-     file only contains what's unique to the homepage. Global CSS
-     (tokens, header, nav, buttons, grid system, footer) lives once
-     in layouts/front.blade.php — only home-specific CSS (hero
-     video, circle-row sizing already shared, card variants used
-     here) stays in this page's own @push('styles') block.
-============================================================ --}}
 
 <div class="upswep-home">
 
@@ -32,150 +15,110 @@
             <source src="{{ asset('videos/hero-video-2.mp4') }}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-
         <div class="up-hero__content">
             <h1>CLOTHING LINE</h1>
-            <a href="#" class="up-btn up-btn--light" style="color: #111111">SHOP NOW</a>
+            <a href="{{ url('/products') }}" class="up-btn up-btn--light" style="color: #111111">SHOP NOW</a>
         </div>
     </section>
 
-    {{-- ============ CATEGORY CIRCLES : MENS ============ --}}
-    <section class="up-section">
-        <div class="up-container">
-            <h2 class="up-section__title">UPSWEP MENS</h2>
-            <div class="up-circle-row">
-                @php
-                    $mensCats = [
-                        ['label' => 'SHIRTS', 'img' => asset('images/categories/shirt.jpg')],
-                        ['label' => 'JEANS', 'img' => asset('images/categories/jeans.jpg')],
-                        ['label' => 'HOODIES', 'img' => asset('images/categories/hoodies.jpg')],
-                        ['label' => 'TROUSERS', 'img' => asset('images/categories/trousers.jpg')],
-                        ['label' => 'FOOTWEAR', 'img' => asset('images/categories/footwear.jpg')],
-                        ['label' => 'T-SHIRTS', 'img' => asset('images/categories/tshirts.jpg')],
-                        ['label' => 'KNITWEAR', 'img' => asset('images/categories/kintwear.jpg')],
-                        ['label' => 'ACCESSORIES', 'img' => asset('images/categories/accessories.jpg')],
-                    ];
-                @endphp
-                @foreach ($mensCats as $cat)
-                    <a href="#" class="up-circle">
-                        <span class="up-circle__img">
-                            <img src="{{ $cat['img'] }}" alt="{{ $cat['label'] }}">
-                        </span>
-                        <span class="up-circle__label">{{ $cat['label'] }}</span>
-                    </a>
-                @endforeach
+    {{-- ============ CATEGORY CIRCLES ============ --}}
+    @if ($categories->isNotEmpty())
+        <section class="up-section">
+            <div class="up-container">
+                <h2 class="up-section__title">UPSWEP MENS</h2>
+                <div class="up-circle-row">
+                    @foreach ($categories as $cat)
+                        <a href="{{ url('/products?category=' . $cat->slug) }}" class="up-circle">
+                            <span class="up-circle__img">
+                                @if ($cat->image)
+                                    {{-- img_url() checks WebP first, falls back to original --}}
+                                    {{-- reads directly from storage/app/public, no symlink needed --}}
+                                    <img src="{{ img_url($cat->image) }}" alt="{{ $cat->name }}">
+                                @else
+                                    <span class="up-circle__placeholder">
+                                        {{ strtoupper(substr($cat->name, 0, 1)) }}
+                                    </span>
+                                @endif
+                            </span>
+                            <span class="up-circle__label">{{ strtoupper($cat->name) }}</span>
+                        </a>
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
     {{-- ============ TRENDING NOW (3-up) ============ --}}
-    <section class="up-section">
-        <div class="up-container">
-            <h2 class="up-section__title">TRENDING NOW</h2>
-            <div class="up-grid up-grid--3">
-                @php
-                    $trending = [
-                        ['label' => 'TOP PICKS', 'img' => asset('images/trending/17.jpg')],
-                        ['label' => '', 'img' => asset('images/trending/14.jpg')],
-                        ['label' => 'HOLIDAY SHOP', 'img' => asset('images/trending/11.jpg')],
-                    ];
-                @endphp
-                @foreach ($trending as $card)
-                    <a href="#" class="up-card up-card--tall">
-                        <img src="{{ $card['img'] }}" alt="{{ $card['label'] }}">
-                        <span class="up-card__caption">{{ $card['label'] }}</span>
-                    </a>
-                @endforeach
+    @if ($trending->isNotEmpty())
+        <section class="up-section">
+            <div class="up-container">
+                <h2 class="up-section__title">TRENDING NOW</h2>
+                <div class="up-grid up-grid--3">
+                    @foreach ($trending as $product)
+                        <a href="{{ url('/product/' . $product->slug) }}" class="up-card up-card--tall">
+                            @if ($product->main_image)
+                                <img src="{{ img_url($product->main_image) }}" alt="{{ $product->name }}">
+                            @else
+                                <div class="up-card__no-image">
+                                    <span>{{ strtoupper(substr($product->name, 0, 1)) }}</span>
+                                </div>
+                            @endif
+                            <span class="up-card__caption">{{ strtoupper($product->name) }}</span>
+                        </a>
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
     {{-- ============ STYLED FOR YOU (6-up) ============ --}}
-    <section class="up-section">
-        <div class="up-container">
-            <h2 class="up-section__title">STYLED FOR YOU</h2>
-            <div class="up-grid up-grid--6">
-                @php
-                    $styled = [
-                        ['label' => 'OCCASIONWEAR', 'img' => asset('images/products/4.jpg')],
-                        ['label' => 'SHACKET SEASON', 'img' => asset('images/products/33.jpg')],
-                        ['label' => 'DENIM', 'img' => asset('images/products/44.jpg')],
-                        ['label' => 'GRAPHIC SHOP', 'img' => asset('images/products/55.jpg')],
-                        ['label' => 'SPORTSWEAR', 'img' => asset('images/products/66.jpg')],
-                        ['label' => 'CARGOS', 'img' => asset('images/products/22.jpg')],
-                    ];
-                @endphp
-                @foreach ($styled as $card)
-                    <a href="#" class="up-card">
-                        <img src="{{ $card['img'] }}" alt="{{ $card['label'] }}">
-                        <span class="up-card__label">{{ $card['label'] }}</span>
-                    </a>
-                @endforeach
+    @if ($styled->isNotEmpty())
+        <section class="up-section">
+            <div class="up-container">
+                <h2 class="up-section__title">STYLED FOR YOU</h2>
+                <div class="up-grid up-grid--6">
+                    @foreach ($styled as $product)
+                        <a href="{{ url('/product/' . $product->slug) }}" class="up-card">
+                            @if ($product->main_image)
+                                <img src="{{ img_url($product->main_image) }}" alt="{{ $product->name }}">
+                            @else
+                                <div class="up-card__no-image">
+                                    <span>{{ strtoupper(substr($product->name, 0, 1)) }}</span>
+                                </div>
+                            @endif
+                            <span class="up-card__label">{{ strtoupper($product->name) }}</span>
+                        </a>
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
     {{-- ============ FEATURED (3-up with descriptions) ============ --}}
-    <section class="up-section">
-        <div class="up-container">
-            <h2 class="up-section__title">FEATURED</h2>
-            <div class="up-grid up-grid--3">
-                @php
-                    $featured = [
-                        [
-                            'label' => 'SMART SHOP',
-                            'desc'  => 'Upgrade your wardrobe with our men’s smart shop. Perfect for any occasion, from the office to after-work drinks and special events.',
-                            'img'   => asset('images/featured/22.jpg'),
-                        ],
-                        [
-                            'label' => 'THE LINEN COLLECTION',
-                            'desc'  => 'Discover our classic linen collection, including tailored shirts, lightweight shirts and easy-to-wear trousers and shorts.',
-                            'img'   => asset('images/featured/28.jpg'),
-                        ],
-                        [
-                            'label' => 'INTRODUCING COLOUR',
-                            'desc'  => 'New season, new shades.',
-                            'img'   => asset('images/featured/27.jpg'),
-                        ],
-                    ];
-                @endphp
-                @foreach ($featured as $card)
-                    <div class="up-feature-card">
-                        <a href="#" class="up-feature-card__img">
-                            <img src="{{ $card['img'] }}" alt="{{ $card['label'] }}">
-                        </a>
-                        <h3>{{ $card['label'] }}</h3>
-                        <p>{{ $card['desc'] }}</p>
-                    </div>
-                @endforeach
+    @if ($featured->isNotEmpty())
+        <section class="up-section">
+            <div class="up-container">
+                <h2 class="up-section__title">FEATURED</h2>
+                <div class="up-grid up-grid--3">
+                    @foreach ($featured as $product)
+                        <div class="up-feature-card">
+                            <a href="{{ url('/product/' . $product->slug) }}" class="up-feature-card__img">
+                                @if ($product->main_image)
+                                    <img src="{{ img_url($product->main_image) }}" alt="{{ $product->name }}">
+                                @else
+                                    <div class="up-card__no-image up-card__no-image--tall">
+                                        <span>{{ strtoupper(substr($product->name, 0, 1)) }}</span>
+                                    </div>
+                                @endif
+                            </a>
+                            <h3>{{ strtoupper($product->name) }}</h3>
+                            <p>{{ $product->description }}</p>
+                        </div>
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </section>
-
-    {{-- ============ DISCOVER BRANDS ============ --}}
-    {{-- <section class="up-section">
-        <div class="up-container">
-            <div class="up-section__head">
-                <h2 class="up-section__title up-section__title--inline">DISCOVER BRANDS</h2>
-                <a href="#" class="up-btn up-btn--outline up-btn--sm">SHOP ALL BRANDS</a>
-            </div>
-            <div class="up-grid up-grid--3">
-                @php
-                    $brands = [
-                        ['label' => '', 'img' => asset('images/featured/35.jpg')],
-                        ['label' => '', 'img' => asset('images/featured/30.jpg')],
-                        ['label' => '', 'img' => asset('images/featured/33.jpg')],
-                    ];
-                @endphp
-                @foreach ($brands as $card)
-                    <a href="#" class="up-card up-card--tall">
-                        <img src="{{ $card['img'] }}" alt="{{ $card['label'] }}">
-                        <span class="up-card__caption">{{ $card['label'] }}</span>
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    </section> --}}
+        </section>
+    @endif
 
     @include('frontend.partials.footer')
 
@@ -185,12 +128,6 @@
 
 @push('styles')
 <style>
-    /* =========================================================
-       HOMEPAGE-ONLY STYLES
-       Everything global (tokens, header, nav, buttons, grid base,
-       footer) already lives in layouts/front.blade.php. Only the
-       hero video block is unique to this page.
-    ========================================================= */
     .up-hero {
         position: relative;
         height: 650px;
@@ -203,6 +140,153 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+
+    /* ---- Hero content: always absolutely positioned over the video ---- */
+    .up-hero__content {
+        position: absolute;
+        left: 40px;
+        bottom: 48px;
+        color: #fff;
+        z-index: 2;
+    }
+
+    .up-hero__content h1 {
+        font-size: 42px;
+        font-weight: 700;
+        letter-spacing: .04em;
+        margin: 0 0 18px;
+        text-shadow: 0 2px 12px rgba(0,0,0,.35);
+        line-height: 1.1;
+    }
+
+    .up-card__no-image {
+        width: 100%;
+        height: 100%;
+        background: #f0eee8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 700;
+        color: #c9c5b8;
+        letter-spacing: .04em;
+    }
+
+    .up-card__no-image--tall {
+        aspect-ratio: 7/9;
+    }
+
+    .up-circle__placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: #e6e3da;
+        font-size: 22px;
+        font-weight: 700;
+        color: #9a9890;
+    }
+
+    /* =========================================================
+       Responsive : mobile (<=768px)
+    ========================================================= */
+    @media (max-width: 768px) {
+
+        /* --- Container: tighter padding on small screens --- */
+        .up-container {
+            padding: 0 16px;
+        }
+
+        /* --- Hero: shorter on mobile, content centered --- */
+        .up-hero {
+            height: 380px;
+        }
+        .up-hero__content {
+            left: 0;
+            right: 0;
+            bottom: 32px;
+            text-align: center;
+            padding: 0 24px;
+        }
+        .up-hero__content h1 {
+            font-size: 26px;
+            letter-spacing: .03em;
+            margin-bottom: 14px;
+        }
+        .up-hero__content .up-btn {
+            padding: 10px 22px;
+            font-size: 11px;
+        }
+
+        /* --- Sections: less vertical padding --- */
+        .up-section {
+            padding: 24px 0;
+        }
+        .up-section__title {
+            font-size: 16px;
+            margin-bottom: 14px !important;
+        }
+
+        /* --- Category circles: single horizontal scroll row --- */
+        .up-circle-row {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            justify-content: flex-start !important;
+            gap: 16px;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .up-circle-row::-webkit-scrollbar { display: none; }
+        .up-circle {
+            width: 80px;
+            flex: 0 0 auto;
+        }
+        .up-circle__img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 8px;
+        }
+        .up-circle__label { font-size: 10px; }
+
+        /* --- Grids: tighter gaps on mobile --- */
+        .up-grid { gap: 10px; }
+
+        /* --- Styled For You labels --- */
+        .up-card__label {
+            font-size: 9.5px;
+            margin-top: 5px;
+        }
+        .up-card--tall .up-card__caption {
+            font-size: 11px;
+            left: 10px;
+            bottom: 10px;
+        }
+
+        /* --- Feature cards --- */
+        .up-feature-card h3 {
+            font-size: 14px;
+            margin: 10px 0 4px;
+        }
+        .up-feature-card p {
+            font-size: 11.5px;
+            line-height: 1.5;
+        }
+
+        /* --- Footer bottom: single column on very small --- */
+        .up-footer-bottom__cols {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .up-hero { height: 320px; }
+        .up-hero__content h1 { font-size: 20px; margin-bottom: 12px; }
+        .up-circle { width: 70px; }
+        .up-circle__img { width: 70px; height: 70px; }
     }
 </style>
 @endpush

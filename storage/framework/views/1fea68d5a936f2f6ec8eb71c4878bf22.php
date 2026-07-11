@@ -13,16 +13,19 @@
 
 <header class="up-header">
     <div class="up-header__row up-header__row--top">
-        <div class="up-search">
-            <input type="text" placeholder="Search for anything here...">
-            <button type="button" aria-label="Search">
+        <form class="up-search" method="GET" action="<?php echo e(url('/products')); ?>" role="search">
+            <input type="text" name="q"
+                value="<?php echo e(request('q')); ?>"
+                placeholder="Search for anything here..."
+                autocomplete="off">
+            <button type="submit" aria-label="Search">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="10.5" cy="10.5" r="6.5"></circle>
                     <path d="M15.5 15.5L21 21"></path>
                 </svg>
             </button>
-        </div>
+        </form>
 
         <a href="<?php echo e(url('/')); ?>" class="up-logo">UPSWEP</a>
 

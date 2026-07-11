@@ -4,6 +4,11 @@
     class="authentication-bg"
 @endsection
 
+<style>
+    .authentication-bg{
+        background: linear-gradient(90deg,#000,#000) !important;
+    }
+</style>
 @section('content')
     <div class="account-pages py-5">
         <div class="container">
@@ -14,11 +19,11 @@
                             <div class="text-center">
                                 <div class="mx-auto mb-4 text-center auth-logo">
                                     <a href="#" class="logo-dark">
-                                        <img src="/images/upsswep.png" height="250" width="250" alt="logo dark">
+                                        <img src="/images/upswep.png" height="250" width="250" alt="logo dark">
                                     </a>
 
                                     <a href="#" class="logo-light">
-                                        <img src="/images/upsswep.png" height="250" width="250" alt="logo light">
+                                        <img src="/images/upswep.png" height="250" width="250" alt="logo light">
                                     </a>
                                 </div>
                                 {{-- <h4 class="fw-bold text-dark mb-2">Welcome Back!</h3>

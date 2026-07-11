@@ -1,14 +1,14 @@
 <div class="app-sidebar">
     <!-- Sidebar Logo -->
     <div class="logo-box">
-        <a href="{{ route('any', 'index') }}" class="logo-dark">
-            <img src="/images/upsswep.png" class="logo-sm" alt="logo sm">
-            <img src="/images/upsswep.png" class="logo-lg" alt="logo dark" style="width: 150px; height: 75px;">
+        <a href="{{ route('admin.dashboard') }}" class="logo-dark">
+            <img src="/images/upswep.png" class="logo-sm" alt="logo sm">
+            <img src="/images/upswep.png" class="logo-lg" alt="logo dark" style="width: 150px; height: 75px;">
         </a>
 
-        <a href="{{ route('any', 'index') }}" class="logo-light">
-            <img src="/images/upsswep.png" class="logo-sm" alt="logo sm">
-            <img src="/images/upsswep.png" class="logo-lg" alt="logo light" style="width: 150px; height: 75px;">
+        <a href="{{ route('admin.dashboard') }}" class="logo-light">
+            <img src="/images/upswep.png" class="logo-sm" alt="logo sm">
+            <img src="/images/upswep.png" class="logo-lg" alt="logo light" style="width: 150px; height: 75px;">
         </a>
     </div>
 
@@ -51,38 +51,89 @@
                     </ul>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link menu-arrow" href="#sidebarCustomer" data-bs-toggle="collapse" role="button"
-                    aria-expanded="false" aria-controls="sidebarCustomer">
-                    <span class="nav-icon">
-                        <iconify-icon icon="solar:user-circle-outline"></iconify-icon>
-                    </span>
-                    <span class="nav-text"> Customer</span>
-                </a>
-                <div class="collapse" id="sidebarCustomer">
-                    <ul class="nav sub-navbar-nav">
-                        <li class="sub-nav-item">
-                            <a class="sub-nav-link" href="{{ route('second', ['customer', 'create']) }}">Create</a>
-                        </li>
-                        <li class="sub-nav-item">
-                            <a class="sub-nav-link" href="{{ route('admin.customers.index') }}">View </a>
-                        </li>
 
-
-                    </ul>
-                </div>
+           {{-- ============ CATEGORIES ============ --}}
+<li class="nav-item">
+    <a class="nav-link menu-arrow" href="#sidebarCategories" data-bs-toggle="collapse" role="button"
+        aria-expanded="false" aria-controls="sidebarCategories">
+        <span class="nav-icon">
+            <iconify-icon icon="solar:tag-outline"></iconify-icon>
+        </span>
+        <span class="nav-text">Categories</span>
+    </a>
+    <div class="collapse" id="sidebarCategories">
+        <ul class="nav sub-navbar-nav">
+            <li class="sub-nav-item">
+                <a class="sub-nav-link" href="{{ route('admin.categories.index') }}">View All</a>
             </li>
+            <li class="sub-nav-item">
+                <a class="sub-nav-link" href="{{ route('admin.categories.create') }}">Add New</a>
+            </li>
+        </ul>
+    </div>
+</li>
 
+{{-- ============ BRANDS ============ --}}
+<li class="nav-item">
+    <a class="nav-link menu-arrow" href="#sidebarBrands" data-bs-toggle="collapse" role="button"
+        aria-expanded="false" aria-controls="sidebarBrands">
+        <span class="nav-icon">
+            <iconify-icon icon="solar:shop-outline"></iconify-icon>
+        </span>
+        <span class="nav-text">Brands</span>
+    </a>
+    <div class="collapse" id="sidebarBrands">
+        <ul class="nav sub-navbar-nav">
+            <li class="sub-nav-item">
+                <a class="sub-nav-link" href="{{ route('admin.brands.index') }}">View All</a>
+            </li>
+            <li class="sub-nav-item">
+                <a class="sub-nav-link" href="{{ route('admin.brands.create') }}">Add New</a>
+            </li>
+        </ul>
+    </div>
+</li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('admin.profile.edit') }}">
-                         <span class="nav-icon">
-                              <iconify-icon icon="solar:widget-2-outline"></iconify-icon>
-                         </span>
-                         <span class="nav-text"> Profile </span>
-                         
-                    </a>
-               </li>
+{{-- ============ PRODUCTS ============ --}}
+<li class="nav-item">
+    <a class="nav-link menu-arrow" href="#sidebarProducts" data-bs-toggle="collapse" role="button"
+        aria-expanded="false" aria-controls="sidebarProducts">
+        <span class="nav-icon">
+            <iconify-icon icon="solar:t-shirt-outline"></iconify-icon>
+        </span>
+        <span class="nav-text">Products</span>
+    </a>
+    <div class="collapse" id="sidebarProducts">
+        <ul class="nav sub-navbar-nav">
+            <li class="sub-nav-item">
+                <a class="sub-nav-link" href="{{ route('admin.products.index') }}">View All</a>
+            </li>
+            <li class="sub-nav-item">
+                <a class="sub-nav-link" href="{{ route('admin.products.create') }}">Add New</a>
+            </li>
+        </ul>
+    </div>
+</li>
+
+{{-- ============ ENQUIRIES ============ --}}
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('admin.enquiries.index') }}">
+        <span class="nav-icon">
+            <iconify-icon icon="solar:chat-line-outline"></iconify-icon>
+        </span>
+        <span class="nav-text">Enquiries</span>
+    </a>
+</li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.profile.edit') }}">
+                    <span class="nav-icon">
+                        <iconify-icon icon="solar:widget-2-outline"></iconify-icon>
+                    </span>
+                    <span class="nav-text"> Profile </span>
+
+                </a>
+            </li>
 
             {{-- <li class="nav-item">
                     <a class="nav-link menu-arrow" href="#sidebarAuthentication" data-bs-toggle="collapse" role="button"

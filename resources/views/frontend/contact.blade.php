@@ -63,39 +63,63 @@
                         <div class="up-contact__alert">{{ session('success') }}</div>
                     @endif
 
-                    <form method="POST" action="{{ \Illuminate\Support\Facades\Route::has('contact.store') ? route('contact.store') : '#' }}" class="up-contact__form">
+                    <form method="POST" action="{{ route('contact.store') }}" class="up-contact__form">
                         @csrf
 
                         <div class="up-contact__form-row">
                             <label for="contact_name">Name</label>
-                            <input type="text" id="contact_name" name="name" required placeholder="Your full name">
+                            <input type="text" id="contact_name" name="name"
+                                value="{{ old('name') }}"
+                                required placeholder="Your full name"
+                                class="{{ $errors->has('name') ? 'is-invalid' : '' }}">
+                            @error('name')
+                                <span class="up-contact__field-error">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="up-contact__form-row up-contact__form-row--split">
                             <div>
                                 <label for="contact_email">Email</label>
-                                <input type="email" id="contact_email" name="email" required placeholder="you@example.com">
+                                <input type="email" id="contact_email" name="email"
+                                    value="{{ old('email') }}"
+                                    required placeholder="you@example.com"
+                                    class="{{ $errors->has('email') ? 'is-invalid' : '' }}">
+                                @error('email')
+                                    <span class="up-contact__field-error">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div>
                                 <label for="contact_phone">Phone <span class="up-contact__optional">(optional)</span></label>
-                                <input type="tel" id="contact_phone" name="phone" placeholder="07X XXX XXXX">
+                                <input type="tel" id="contact_phone" name="phone"
+                                    value="{{ old('phone') }}"
+                                    placeholder="07X XXX XXXX">
                             </div>
                         </div>
 
                         <div class="up-contact__form-row">
                             <label for="contact_subject">Subject</label>
-                            <select id="contact_subject" name="subject">
-                                <option value="general">General Enquiry</option>
-                                <option value="order">Order Question</option>
-                                <option value="product">Product Question</option>
-                                <option value="returns">Returns &amp; Exchanges</option>
-                                <option value="other">Other</option>
+                            <select id="contact_subject" name="subject"
+                                class="{{ $errors->has('subject') ? 'is-invalid' : '' }}">
+                                <option value="">Select a subject</option>
+                                <option value="general"  {{ old('subject') === 'general'  ? 'selected' : '' }}>General Enquiry</option>
+                                <option value="order"    {{ old('subject') === 'order'    ? 'selected' : '' }}>Order Question</option>
+                                <option value="product"  {{ old('subject') === 'product'  ? 'selected' : '' }}>Product Question</option>
+                                <option value="returns"  {{ old('subject') === 'returns'  ? 'selected' : '' }}>Returns &amp; Exchanges</option>
+                                <option value="other"    {{ old('subject') === 'other'    ? 'selected' : '' }}>Other</option>
                             </select>
+                            @error('subject')
+                                <span class="up-contact__field-error">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="up-contact__form-row">
                             <label for="contact_message">Message</label>
-                            <textarea id="contact_message" name="message" rows="5" required placeholder="How can we help?"></textarea>
+                            <textarea id="contact_message" name="message" rows="5"
+                                required placeholder="How can we help?"
+                                class="{{ $errors->has('message') ? 'is-invalid' : '' }}">{{ old('message') }}</textarea>
+                            @error('message')
+                                <span class="up-contact__field-error">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <button type="submit" class="up-btn up-contact__submit">SEND MESSAGE</button>
@@ -110,17 +134,17 @@
     <div class="up-contact__info-block">
         <h3>Visit Our Store</h3>
         <p>
-            123 High Street<br>
-            Colombo 03<br>
-            Sri Lanka
+             57/A, Jumma     Mawatha,   <br>
+        Negombo, Sri Lanka<br>
+     
         </p>
     </div>
 
     <div class="up-contact__info-block">
         <h3>Get In Touch</h3>
         <p>
-            <a href="tel:+94112345678">+94 11 234 5678</a><br>
-            <a href="mailto:hello@upswep.com">hello@upswep.com</a>
+            <a href="tel:+94112345678">+94 77 237 0465</a><br>
+            <a href="mailto:hello@upswep.com">safwanasmi21@gmail.com</a>
         </p>
     </div>
 
@@ -129,15 +153,15 @@
                     <div class="up-contact__info-block">
                         <h3>Opening Hours</h3>
                         <ul class="up-contact__hours">
-                            <li><span>Monday – Friday</span><span>9:00 AM – 7:00 PM</span></li>
-                            <li><span>Saturday</span><span>9:00 AM – 6:00 PM</span></li>
-                            <li><span>Sunday</span><span>Closed</span></li>
+                            <li><span>Monday – Friday</span><span>9:00 AM – 9:30 PM</span></li>
+                            <li><span>Saturday</span><span>9:00 AM – 9:30 PM</span></li>
+                            <li><span>Sunday</span><span>10:00 AM – 9:00 PM</span></li>
                         </ul>
                     </div>
 
                     <div class="up-contact__map">
                         <iframe
-                            src="https://www.google.com/maps?q=Colombo,Sri+Lanka&output=embed"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1979.0997682734485!2d79.84622290645376!3d7.218066498189422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2ef1f1962e595%3A0x669860819e2aae5!2sUpswep!5e0!3m2!1sen!2slk!4v1783742189320!5m2!1sen!2slk"
                             width="100%" height="260" style="border:0;" allowfullscreen
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"
@@ -284,6 +308,18 @@
     .up-contact__form-row textarea:focus,
     .up-contact__form-row--split input:focus {
         border-color: var(--up-black);
+    }
+
+    .up-contact__form-row input.is-invalid,
+    .up-contact__form-row select.is-invalid,
+    .up-contact__form-row textarea.is-invalid {
+        border-color: #c0392b;
+    }
+
+    .up-contact__field-error {
+        font-size: 11px;
+        color: #c0392b;
+        margin-top: 2px;
     }
 
     .up-contact__submit {

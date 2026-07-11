@@ -1,62 +1,10 @@
 @extends('frontend.layouts.front')
 
-@section('title', 'Products - UPSWEP')
-@section('description', 'Browse our latest collection of shirts, hoodies, jeans, footwear and accessories.')
+@section('title', 'UPSWEP — ' . ($activeCategory?->name ?? 'All Products'))
 
 @section('content')
-{{-- ============================================================
-     UPSWEP PRODUCTS LISTING PAGE (PLP)
-     resources/views/frontend/grid.blade.php
-
-     Structure: Header (partial) -> Breadcrumb -> Page title+count
-     -> Filter/Sort bar -> Product grid (4-up desktop / 2-up mobile)
-     -> Pagination -> Footer (partial)
-
-     Global header/nav/footer markup now lives in shared partials
-     (partials/header.blade.php, partials/footer.blade.php) so this
-     file only contains what's unique to the products page. Global
-     CSS (tokens, header, nav, buttons, grid base, footer) lives
-     once in layouts/front.blade.php — only PLP-specific CSS
-     (breadcrumb, page head, filter bar, product card, pagination)
-     stays in this page's own @push('styles') block.
-
-     Placeholder product data for now — swap $products for a real
-     Eloquent paginate() call once the Product model is wired up.
-============================================================ --}}
 
 <div class="upswep-home upswep-plp">
-
-    @php
-        // ----------------------------------------------------------
-        // PLACEHOLDER DATA — defined here, at the top of the view,
-        // so it exists before the filter bar's product count and
-        // the grid below both try to read it. Replace with a real
-        // Eloquent query in your controller, e.g.:
-        //
-        // $products = Product::with(['category', 'brand', 'images'])
-        //     ->where('is_active', 1)
-        //     ->latest()
-        //     ->paginate(20);
-        //
-        // Once the controller passes a real $products variable to
-        // this view, this whole @php block is simply skipped (the
-        // ?? fallback only fires when $products isn't already set).
-        // ----------------------------------------------------------
-        $products = $products ?? [
-            ['name' => 'White Slim Fit Easy Care Single Cuff Smart Shirt', 'category' => 'Shirts', 'brand' => 'BrandOne', 'price' => 22.00, 'img' => asset('images/products/1.jpg')],
-            ['name' => 'White Button Down Collar Cotton Linen Blend Short Sleeve Shirt', 'category' => 'Shirts', 'brand' => 'BrandTwo', 'price' => 28.00, 'img' => asset('images/products/2.jpg')],
-            ['name' => 'Light Blue Slim Fit Easy Care Single Cuff Shirt', 'category' => 'Shirts', 'brand' => 'BrandOne', 'price' => 22.00, 'img' => asset('images/products/3.jpg')],
-            ['name' => 'Ecru Sage Green Regular Fit Premium Short Sleeve Shirt', 'category' => 'Shirts', 'brand' => 'BrandThree', 'price' => 32.00, 'img' => asset('images/products/4.jpg')],
-            ['name' => 'White Easy Care Cotton Single Cuff Smart Shirt', 'category' => 'Shirts', 'brand' => 'BrandOne', 'price' => 24.00, 'img' => asset('images/products/1.jpg')],
-            ['name' => 'Blue Button Collar Cotton Linen Blend Short Sleeve Shirt', 'category' => 'Shirts', 'brand' => 'BrandTwo', 'price' => 28.00, 'img' => asset('images/products/2.jpg')],
-            ['name' => 'Multi Colour Linen Blend Short Sleeve Shirt', 'category' => 'Shirts', 'brand' => 'BrandThree', 'price' => 30.00, 'img' => asset('images/products/3.jpg')],
-            ['name' => 'Threadbare White Short Sleeve Linen Blend Shirt', 'category' => 'Shirts', 'brand' => 'BrandTwo', 'price' => 26.00, 'img' => asset('images/products/4.jpg')],
-            ['name' => 'Neutral Button Down Collar Cotton Linen Blend Shirt', 'category' => 'Shirts', 'brand' => 'BrandOne', 'price' => 22.00, 'img' => asset('images/products/1.jpg')],
-            ['name' => 'White Regular Fit Short Sleeve Oxford Shirt', 'category' => 'Shirts', 'brand' => 'BrandTwo', 'price' => 22.00, 'img' => asset('images/products/2.jpg')],
-            ['name' => 'Light Blue Regular Fit Easy Care Single Cuff Shirt', 'category' => 'Shirts', 'brand' => 'BrandThree', 'price' => 28.00, 'img' => asset('images/products/3.jpg')],
-            ['name' => 'Pink Button Down Collar Cotton Linen Blend Short Sleeve Shirt', 'category' => 'Shirts', 'brand' => 'BrandOne', 'price' => 28.00, 'img' => asset('images/products/4.jpg')],
-        ];
-    @endphp
 
     @include('frontend.partials.header')
 
@@ -65,66 +13,97 @@
         <div class="up-container">
             <a href="{{ url('/') }}">Home</a>
             <span class="up-breadcrumb__sep">/</span>
-            <span>Shirts</span>
+            @if ($activeCategory)
+                <span>{{ $activeCategory->name }}</span>
+            @else
+                <span>All Products</span>
+            @endif
         </div>
     </div>
 
-    {{-- ============ PAGE TITLE + INTRO ============ --}}
+    {{-- ============ PAGE TITLE ============ --}}
     <div class="up-plp-head">
         <div class="up-container">
-            <h1 class="up-plp-head__title">Men's Shirts <span class="up-plp-head__count">(64)</span></h1>
-            <p class="up-plp-head__intro">
-                Shirts for every occasion, from casual weekends to smart office days. Choose from classic Oxfords,
-                relaxed linen, and easy-care fits — designed to look sharp and feel comfortable all day.
-            </p>
+            <h1 class="up-plp-head__title">
+                {{ $activeCategory?->name ?? 'All Products' }}
+                {{-- <span class="up-plp-head__count">({{ $products->total() }})</span> --}}
+            </h1>
+            @if ($activeCategory)
+                <p class="up-plp-head__intro">
+                    Explore our {{ strtolower($activeCategory->name) }} collection — thoughtfully designed
+                    pieces that move easily from everyday wear to something a little more polished.
+                </p>
+            @else
+                <p class="up-plp-head__intro">
+                    The full UPSWEP collection, in one place — shirts, jeans, knitwear, footwear and
+                    the essentials you'll actually reach for. Built to last, made to be worn.
+                </p>
+            @endif
         </div>
     </div>
 
     {{-- ============ FILTER / SORT BAR ============ --}}
     <div class="up-filter-bar">
         <div class="up-container">
-            <form class="up-filter-bar__row" id="up-filter-form">
-                <div class="up-filter">
-                    <label for="filterCategory">Category</label>
-                    <select id="filterCategory" name="category">
-                        <option value="">All Categories</option>
-                        <option value="shirts">Shirts</option>
-                        <option value="t-shirts">T-Shirts</option>
-                        <option value="jeans">Jeans</option>
-                        <option value="hoodies">Hoodies</option>
-                        <option value="trousers">Trousers</option>
-                        <option value="footwear">Footwear</option>
-                        <option value="knitwear">Knitwear</option>
-                        <option value="accessories">Accessories</option>
-                    </select>
+            <form method="GET" action="{{ url('/products') }}" class="up-filter-bar__row" id="up-filter-form">
+
+                <div class="up-filter-bar__fields">
+                    {{-- Category filter — populated from DB --}}
+                    <div class="up-filter">
+                        <label for="filterCategory">Category</label>
+                        <select id="filterCategory" name="category" onchange="this.form.submit()">
+                            <option value="">All Categories</option>
+                            @foreach ($categories as $cat)
+                                <option value="{{ $cat->slug }}"
+                                    {{ request('category') === $cat->slug ? 'selected' : '' }}>
+                                    {{ $cat->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Brand filter — hidden for now, enable when needed
+                    <div class="up-filter">
+                        <label for="filterBrand">Brand</label>
+                        <select id="filterBrand" name="brand" onchange="this.form.submit()">
+                            <option value="">All Brands</option>
+                            @foreach ($brands as $brand)
+                                <option value="{{ $brand->slug }}"
+                                    {{ request('brand') === $brand->slug ? 'selected' : '' }}>
+                                    {{ $brand->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    --}}
+
+                    {{-- Sort --}}
+                    <div class="up-filter">
+                        <label for="sortBy">Sort by</label>
+                        <select id="sortBy" name="sort" onchange="this.form.submit()">
+                            <option value="newest"     {{ request('sort', 'newest') === 'newest'     ? 'selected' : '' }}>Newest First</option>
+                            <option value="price-low"  {{ request('sort') === 'price-low'            ? 'selected' : '' }}>Price: Low to High</option>
+                            <option value="price-high" {{ request('sort') === 'price-high'           ? 'selected' : '' }}>Price: High to Low</option>
+                            <option value="name-az"    {{ request('sort') === 'name-az'              ? 'selected' : '' }}>Name: A to Z</option>
+                        </select>
+                    </div>
+
+                    {{-- Clear — only shown when a filter is active --}}
+                    @if (request('category') || request('sort'))
+                        <a href="{{ url('/products') }}" class="up-btn up-btn--outline up-btn--sm up-filter-bar__clear">
+                            CLEAR
+                        </a>
+                    @endif
                 </div>
 
-                <div class="up-filter">
-                    <label for="filterBrand">Brand</label>
-                    <select id="filterBrand" name="brand">
-                        <option value="">All Brands</option>
-                        <option value="brandone">BrandOne</option>
-                        <option value="brandtwo">BrandTwo</option>
-                        <option value="brandthree">BrandThree</option>
-                    </select>
-                </div>
+                {{-- Count pushed to the right --}}
+                <p class="up-filter-bar__count mb-0">
+                    <span class="up-filter-bar__count-number">{{ $products->total() }}</span>
+                    product{{ $products->total() !== 1 ? 's' : '' }}
+                    @if ($activeCategory) in <strong>{{ $activeCategory->name }}</strong>@endif
+                </p>
 
-                <div class="up-filter up-filter--sort">
-                    <label for="sortBy">Sort by</label>
-                    <select id="sortBy" name="sort">
-                        <option value="newest">Newest First</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="name-az">Name: A to Z</option>
-                    </select>
-                </div>
-
-                <button type="button" id="up-filter-clear" class="up-btn up-btn--outline up-btn--sm up-filter-bar__clear">
-                    CLEAR
-                </button>
             </form>
-
-            <p class="up-filter-bar__count" id="up-result-count">Showing {{ count($products) }} products</p>
         </div>
     </div>
 
@@ -132,46 +111,55 @@
     <section class="up-section up-plp-section">
         <div class="up-container">
 
-            <div class="up-product-grid">
-                @forelse ($products as $product)
-                    <a href="{{ url('/product') }}" class="up-product-card">
-                        <div class="up-product-card__img">
-                            <img src="{{ is_array($product) ? $product['img'] : $product->images->first()?->image_path }}"
-                                alt="{{ is_array($product) ? $product['name'] : $product->name }}">
-                            <button type="button" class="up-product-card__wish" aria-label="Add to wishlist">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6">
-                                    <path d="M12 21s-7.5-4.6-10-9.3C.6 8.2 2.4 4.5 6 4c2.2-.3 4.2 1 6 3.1C13.8 5 15.8 3.7 18 4c3.6.5 5.4 4.2 4 7.7C19.5 16.4 12 21 12 21z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="up-product-card__body">
-                            <span class="up-product-card__brand">{{ is_array($product) ? $product['brand'] : $product->brand?->name }}</span>
-                            <span class="up-product-card__name">{{ is_array($product) ? $product['name'] : $product->name }}</span>
-                            <span class="up-product-card__price">£{{ number_format(is_array($product) ? $product['price'] : $product->price, 2) }}</span>
-                        </div>
+            @if ($products->isEmpty())
+                <div class="up-plp-empty">
+                    <p>No products found matching your filters.</p>
+                    <a href="{{ url('/products') }}" class="up-btn up-btn--outline up-btn--sm" style="margin-top:12px;">
+                        View All Products
                     </a>
-                @empty
-                    <p class="up-plp-empty">No products found. Check back soon.</p>
-                @endforelse
-            </div>
+                </div>
+            @else
+                <div class="up-product-grid">
+                    @foreach ($products as $product)
+                        <a href="{{ url('/product/' . $product->slug) }}" class="up-product-card">
+                            <div class="up-product-card__img">
+                                {{-- img_url() checks WebP first, falls back to original --}}
+                                {{-- reads directly from storage/app/public — no symlink --}}
+                                <img src="{{ img_url($product->main_image) }}"
+                                    alt="{{ $product->name }}"
+                                    loading="lazy">
+                                <button type="button" class="up-product-card__wish" aria-label="Add to wishlist"
+                                    onclick="event.preventDefault()">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                        stroke="currentColor" stroke-width="1.6">
+                                        <path d="M12 21s-7.5-4.6-10-9.3C.6 8.2 2.4 4.5 6 4c2.2-.3 4.2 1 6 3.1C13.8 5 15.8 3.7 18 4c3.6.5 5.4 4.2 4 7.7C19.5 16.4 12 21 12 21z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="up-product-card__body">
+                                <span class="up-product-card__brand">
+                                    {{ $product->brand?->name ?? $product->category?->name ?? '' }}
+                                </span>
+                                <span class="up-product-card__name">{{ $product->name }}</span>
+                                <span class="up-product-card__price">
+                                    @if ($product->price)
+                                        LKR {{ number_format($product->price, 2) }}
+                                    @else
+                                        Contact for price
+                                    @endif
+                                </span>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
 
             {{-- ============ PAGINATION ============ --}}
-            <div class="up-pagination">
-                @if (is_object($products) && method_exists($products, 'links'))
-                    {{ $products->links() }}
-                @else
-                    {{-- Placeholder pagination markup — replace with $products->links() once paginated --}}
-                    <nav class="up-pagination__nav" aria-label="Pagination">
-                        <a href="#" class="up-pagination__btn is-disabled" aria-disabled="true">&laquo;</a>
-                        <a href="#" class="up-pagination__btn is-active">1</a>
-                        <a href="#" class="up-pagination__btn">2</a>
-                        <a href="#" class="up-pagination__btn">3</a>
-                        <span class="up-pagination__dots">…</span>
-                        <a href="#" class="up-pagination__btn">6</a>
-                        <a href="#" class="up-pagination__btn">&raquo;</a>
-                    </nav>
-                @endif
-            </div>
+            @if ($products->hasPages())
+                <div class="up-pagination">
+                    {{ $products->links('vendor.pagination.upswep') }}
+                </div>
+            @endif
 
         </div>
     </section>
@@ -185,102 +173,110 @@
 @push('styles')
 <style>
     /* =========================================================
-       PRODUCTS PAGE-ONLY STYLES
-       Everything global (tokens, header, nav, buttons, grid base,
-       footer) already lives in layouts/front.blade.php. Only PLP-
-       specific rules live here: breadcrumb, page head, filter bar,
-       product grid/card, pagination.
+       PRODUCTS PAGE — PAGE-ONLY STYLES
     ========================================================= */
+    .up-plp-section { padding-top: 28px; }
 
-    /* ---- Breadcrumb ---- */
-    .up-breadcrumb {
-        background: #fff;
-        border-bottom: 1px solid var(--up-line);
-        padding: 10px 0;
-        font-size: 11.5px;
-        color: var(--up-muted);
-    }
-    .up-breadcrumb a { color: var(--up-muted); }
-    .up-breadcrumb a:hover { color: var(--up-black); text-decoration: underline; }
-    .up-breadcrumb__sep { margin: 0 6px; color: #c9c5b8; }
-
-    /* ---- Page head ---- */
-    .up-plp-head {
-        background: #fff;
-        padding: 22px 0 16px;
-    }
-    .up-plp-head__title {
-        font-size: 24px;
-        font-weight: 700;
-        letter-spacing: .01em;
-        color: #1a1a1a;
-        margin-bottom: 8px;
-    }
-    .up-plp-head__count {
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--up-muted);
-    }
     .up-plp-head__intro {
-        font-size: 12.5px;
-        color: var(--up-muted);
-        max-width: 760px;
-        line-height: 1.6;
+        max-width: 640px;
     }
 
-    /* ---- Filter / sort bar ---- */
+    .up-plp-head{
+        margin-top: 15px;
+    }
+
+    /* ---- Filter bar ---- */
     .up-filter-bar {
         background: var(--up-bg);
-        border-top: 1px solid var(--up-line);
-        border-bottom: 1px solid var(--up-line);
-        padding: 14px 0;
+        border: 1px solid var(--up-line);
+        border-radius: 10px;
+        padding: 20px 24px;
+        margin: 24px 0 8px;
     }
     .up-filter-bar__row {
         display: flex !important;
         align-items: flex-end;
-        gap: 16px;
+        justify-content: space-between;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+    .up-filter-bar__fields {
+        display: flex;
+        align-items: flex-end;
+        gap: 20px;
         flex-wrap: wrap;
     }
     .up-filter {
         display: flex;
         flex-direction: column;
-        gap: 4px;
-        min-width: 160px;
+        gap: 7px;
+        width: 190px;
+        flex: 0 0 auto;
     }
     .up-filter label {
-        font-size: 10px;
+        font-size: 10.5px;
         font-weight: 700;
-        letter-spacing: .04em;
+        letter-spacing: .06em;
         text-transform: uppercase;
         color: var(--up-muted);
     }
     .up-filter select {
-        padding: 8px 10px;
+        appearance: none;
+        -webkit-appearance: none;
+        background: #fff url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e") no-repeat right 12px center;
+        background-size: 14px;
+        padding: 9px 34px 9px 12px;
         font-size: 12.5px;
+        font-weight: 500;
         border: 1px solid #d4d1c8;
-        border-radius: 2px;
-        background: #fff;
+        border-radius: 6px;
         color: #1a1a1a;
         cursor: pointer;
+        height: 38px;
+        transition: border-color .15s ease, box-shadow .15s ease;
     }
-    .up-filter--sort { margin-left: auto; }
+    .up-filter select:hover {
+        border-color: #b8b4ac;
+    }
+    .up-filter select:focus {
+        outline: none;
+        border-color: var(--up-black);
+        box-shadow: 0 0 0 3px rgba(0,0,0,.06);
+    }
     .up-filter-bar__clear {
-        align-self: flex-end;
-        padding: 8px 18px;
-        font-size: 10.5px;
+        align-self: center;
+        padding: 0;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .04em;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        flex: 0 0 auto;
+        border: none;
+        background: none;
+        color: var(--up-muted);
+        text-decoration: underline;
+    }
+    .up-filter-bar__clear:hover {
+        color: var(--up-black);
     }
     .up-filter-bar__count {
-        margin-top: 10px;
-        font-size: 11.5px;
+        font-size: 12.5px;
         color: var(--up-muted);
+        white-space: nowrap;
+        padding-bottom: 9px;
+    }
+    .up-filter-bar__count-number {
+        font-weight: 700;
+        color: #1a1a1a;
     }
 
-    /* ---- Product grid ---- */
-    .up-plp-section { padding-top: 28px; }
     .up-product-grid {
         display: grid !important;
         grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
         gap: 22px 16px;
+        margin-top: 8px;
     }
 
     .up-product-card { display: block; }
@@ -300,167 +296,79 @@
     .up-product-card:hover .up-product-card__img img { transform: scale(1.04); }
 
     .up-product-card__wish {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, .9);
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        color: #1a1a1a;
+        position: absolute; top: 8px; right: 8px;
+        width: 28px; height: 28px; border-radius: 50%;
+        background: rgba(255,255,255,.9); border: none;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; color: #1a1a1a;
     }
     .up-product-card__wish:hover { background: #fff; }
 
-    .up-product-card__body {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-    }
+    .up-product-card__body { display: flex; flex-direction: column; gap: 3px; }
     .up-product-card__brand {
-        font-size: 9.5px;
-        font-weight: 700;
-        letter-spacing: .05em;
-        text-transform: uppercase;
-        color: var(--up-muted);
+        font-size: 9.5px; font-weight: 700; letter-spacing: .05em;
+        text-transform: uppercase; color: var(--up-muted);
     }
     .up-product-card__name {
-        font-size: 12px;
-        font-weight: 500;
-        color: #1a1a1a;
+        font-size: 12px; font-weight: 500; color: #1a1a1a;
         line-height: 1.4;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        display: -webkit-box; -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical; overflow: hidden;
     }
-    .up-product-card__price {
-        font-size: 13px;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin-top: 2px;
-    }
+    .up-product-card__price { font-size: 13px; font-weight: 700; color: #1a1a1a; margin-top: 2px; }
 
     .up-plp-empty {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: 60px 0;
-        color: var(--up-muted);
-        font-size: 13px;
+        text-align: center; padding: 60px 0;
+        color: var(--up-muted); font-size: 13px;
     }
 
-    /* ---- Pagination ---- */
-    .up-pagination {
-        display: flex;
-        justify-content: center;
-        margin-top: 36px;
-    }
-    .up-pagination__nav {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .up-pagination__btn {
-        min-width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 600;
-        border: 1px solid var(--up-line);
-        border-radius: 2px;
-        color: #1a1a1a;
-    }
-    .up-pagination__btn:hover { background: var(--up-bg); }
-    .up-pagination__btn.is-active { background: var(--up-black); color: #fff; border-color: var(--up-black); }
-    .up-pagination__btn.is-disabled { color: #c9c5b8; pointer-events: none; }
-    .up-pagination__dots { padding: 0 4px; color: var(--up-muted); font-size: 12px; }
-
-    /* Laravel's default ->links() pagination markup gets the same look */
+    /* ---- Pagination — matches Laravel paginator output ---- */
+    .up-pagination { display: flex; justify-content: center; margin-top: 36px; }
     .up-pagination nav { display: flex; justify-content: center; width: 100%; }
     .up-pagination ul {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        list-style: none;
-        margin: 0;
-        padding: 0;
+        display: flex; align-items: center; gap: 6px;
+        list-style: none; margin: 0; padding: 0;
     }
     .up-pagination ul li span,
     .up-pagination ul li a {
-        min-width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 600;
-        border: 1px solid var(--up-line);
-        border-radius: 2px;
-        color: #1a1a1a;
-        text-decoration: none;
+        min-width: 32px; height: 32px; display: flex;
+        align-items: center; justify-content: center;
+        font-size: 12px; font-weight: 600;
+        border: 1px solid var(--up-line); border-radius: 2px;
+        color: #1a1a1a; text-decoration: none;
     }
-    .up-pagination ul li.active span { background: var(--up-black); color: #fff; border-color: var(--up-black); }
+    .up-pagination ul li span:hover,
+    .up-pagination ul li a:hover { background: var(--up-bg); }
+    .up-pagination ul li.active span {
+        background: var(--up-black); color: #fff; border-color: var(--up-black);
+    }
+    .up-pagination ul li[aria-disabled="true"] span { color: #c9c5b8; pointer-events: none; }
 
     /* ---- Responsive ---- */
     @media (max-width: 1100px) {
         .up-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
     }
-
     @media (max-width: 768px) {
         .up-plp-head__title { font-size: 19px; }
-        .up-plp-head__intro { font-size: 11.5px; }
-
-        .up-filter-bar__row { gap: 10px; }
+        .up-filter-bar { padding: 16px 16px; }
+        .up-filter-bar__row { gap: 16px; }
+        .up-filter-bar__fields { gap: 10px; width: 100%; }
         .up-filter { min-width: 0; flex: 1 1 calc(50% - 5px); }
-        .up-filter--sort { margin-left: 0; flex: 1 1 100%; }
-        .up-filter-bar__clear { flex: 1 1 100%; align-self: stretch; text-align: center; }
-
+        .up-filter-bar__clear { flex: 1 1 100%; justify-content: center; }
+        .up-filter-bar__count {
+            width: 100%;
+            padding-bottom: 0;
+            padding-top: 12px;
+            border-top: 1px solid var(--up-line);
+        }
         .up-product-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             gap: 16px 10px;
         }
-
         .up-product-card__name { font-size: 11px; }
         .up-product-card__price { font-size: 12px; }
     }
 </style>
-@endpush
 
-@push('scripts')
-<script>
-    // =========================================================
-    // PRODUCTS PAGE-ONLY JS
-    // Drag-scroll, mobile search toggle, and checkout button are
-    // already global (see layouts/front.blade.php). Only the
-    // filter/sort form behavior is specific to this page.
-    // =========================================================
-    document.addEventListener('DOMContentLoaded', function () {
 
-        const form = document.getElementById('up-filter-form');
-        const clearBtn = document.getElementById('up-filter-clear');
-
-        // Placeholder: once products come from the DB, swap this for a
-        // real form submit (GET request with category/brand/sort query
-        // params) so the controller can filter/sort server-side.
-        if (form) {
-            form.addEventListener('change', function () {
-                // TODO: replace with form.submit() once the controller
-                // reads ?category=&brand=&sort= from the request.
-                console.log('Filter changed — wire this to a real query once products are in the DB.');
-            });
-        }
-
-        if (clearBtn && form) {
-            clearBtn.addEventListener('click', function () {
-                form.reset();
-            });
-        }
-    });
-</script>
 @endpush

@@ -1,23 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>@yield('title', 'UPSWEP')</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-<meta name="description" content="@yield('description', 'Premium clothing, workwear and accessories from UPSWEP.')">
+{{-- ============ PRIMARY SEO ============ --}}
+<title>@yield('title', 'UPSWEP — Premium Clothing')</title>
+<meta name="description" content="@yield('description', 'Discover premium clothing, workwear, accessories and the latest collections from UPSWEP.')">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="{{ url()->current() }}">
 
-<link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
+{{-- ============ OPEN GRAPH ============ --}}
+<meta property="og:type"         content="@yield('og_type', 'website')">
+<meta property="og:locale"       content="en_LK">
+<meta property="og:site_name"    content="UPSWEP">
+<meta property="og:title"        content="@yield('title', 'UPSWEP — Premium Clothing')">
+<meta property="og:description"  content="@yield('description', 'Discover premium clothing, workwear, accessories and the latest collections from UPSWEP.')">
+<meta property="og:url"          content="{{ url()->current() }}">
+<meta property="og:image"        content="@yield('og_image', asset('images/share-image.png'))">
+<meta property="og:image:width"  content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt"    content="@yield('title', 'UPSWEP — Premium Clothing')">
 
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="UPSWEP">
-<meta property="og:title" content="@yield('title', 'UPSWEP')">
-<meta property="og:description" content="@yield('description', 'Premium clothing, workwear and accessories from UPSWEP.')">
-<meta property="og:url" content="{{ url()->current() }}">
-<meta property="og:image" content="{{ asset('images/share-image.png') }}">
+{{-- ============ TWITTER / X CARD ============ --}}
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:site"        content="@upswep">
+<meta name="twitter:title"       content="@yield('title', 'UPSWEP — Premium Clothing')">
+<meta name="twitter:description" content="@yield('description', 'Discover premium clothing, workwear, accessories and the latest collections from UPSWEP.')">
+<meta name="twitter:image"       content="@yield('og_image', asset('images/share-image.png'))">
+<meta name="twitter:image:alt"   content="@yield('title', 'UPSWEP — Premium Clothing')">
 
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="@yield('title', 'UPSWEP')">
-<meta name="twitter:description" content="@yield('description', 'Premium clothing, workwear and accessories from UPSWEP.')">
-<meta name="twitter:image" content="{{ asset('images/share-image.png') }}">
+{{-- ============ ICONS ============ --}}
+<link rel="icon"             type="image/png" sizes="32x32"  href="{{ asset('images/favicon-32.png') }}">
+<link rel="icon"             type="image/png" sizes="16x16"  href="{{ asset('images/favicon-16.png') }}">
+<link rel="apple-touch-icon"                  sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
+<meta name="theme-color" content="#111111">
+
+{{-- ============ SCHEMA.ORG STRUCTURED DATA ============
+     ClothingStore for all pages by default.
+     Product pages can override with @section('schema') to
+     inject a Product schema instead.
+============================================================ --}}
+@hasSection('schema')
+    @yield('schema')
+@else
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ClothingStore",
+    "name": "UPSWEP",
+    "url": "{{ url('/') }}",
+    "logo": "{{ asset('images/upswep.png') }}",
+    "image": "{{ asset('images/share-image.png') }}",
+    "description": "Premium clothing, workwear and accessories from UPSWEP.",
+    "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "57/A, Jumma Mawatha",
+        "addressLocality": "Negombo",
+        "addressCountry": "LK"
+    },
+    "telephone": "+94772370465",
+    "email": "safwanasmi21@gmail.com",
+    "openingHoursSpecification": [
+        {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+            "opens": "09:00",
+            "closes": "21:30"
+        },
+        {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Saturday",
+            "opens": "09:00",
+            "closes": "21:30"
+        },
+        {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Sunday",
+            "opens": "10:00",
+            "closes": "21:00"
+        }
+    ],
+    "sameAs": [
+        "https://www.facebook.com/upswep",
+        "https://www.instagram.com/upswep",
+        "https://www.tiktok.com/@upswep"
+    ]
+}
+</script>
+@endif
+
+    {{-- Performance: preconnect to CDN origins so fonts/bootstrap load faster --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     {{-- Bootstrap + fonts + icons via CDN — no npm/Vite build step required --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">

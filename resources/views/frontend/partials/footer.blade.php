@@ -23,7 +23,7 @@
             </a>
         </div>
 
-        <div class="up-footer-bottom__cols">
+        {{-- <div class="up-footer-bottom__cols">
             <div class="up-footer-bottom__account">
                 <p><strong>My Account</strong><br>Sign in to your account</p>
                 <button type="button" class="up-lang-switch">
@@ -69,7 +69,7 @@
                     <li><a href="#">UPSWEP Careers</a></li>
                 </ul>
             </div>
-        </div>
+        </div> --}}
 
         <p class="up-footer-bottom__copy">© {{ date('Y') }} UPSWEP Retail Ltd. All rights reserved.</p>
     </div>
